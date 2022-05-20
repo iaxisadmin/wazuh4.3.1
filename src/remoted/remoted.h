@@ -43,19 +43,6 @@ typedef struct message_t {
     size_t counter;
 } message_t;
 
-/* Status structure */
-
-typedef struct remoted_state_t {
-    unsigned int discarded_count;
-    unsigned int tcp_sessions;
-    unsigned int evt_count;
-    unsigned int ctrl_msg_count;
-    unsigned int queued_msgs;
-    unsigned long sent_bytes;
-    unsigned long recv_bytes;
-    unsigned int dequeued_after_close;
-} remoted_state_t;
-
 /* Network buffer structure */
 
 typedef struct sockbuffer_t {
@@ -146,18 +133,6 @@ size_t rem_get_tsize();
 
 // Free message
 void rem_msgfree(message_t * message);
-
-// Status functions
-void * rem_state_main();
-void rem_inc_tcp();
-void rem_dec_tcp();
-void rem_inc_evt();
-void rem_inc_ctrl_msg();
-void rem_inc_msg_queued();
-void rem_add_send(unsigned long bytes);
-void rem_inc_discarded();
-void rem_add_recv(unsigned long bytes);
-void rem_inc_dequeued();
 
 // Read config
 size_t rem_getconfig(const char * section, char ** output);

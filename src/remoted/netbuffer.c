@@ -13,6 +13,7 @@
 #include <shared.h>
 #include <os_net/os_net.h>
 #include "remoted.h"
+#include "state.h"
 
 extern wnotify_t * notify;
 
@@ -224,6 +225,7 @@ int nb_queue(netbuffer_t * buffer, int socket, char * crypt_msg, ssize_t msg_siz
     w_mutex_unlock(&mutex);
 
     if (retval < 0) {
+        rem_inc_send_discarded();
         mwarn("Package dropped. Could not append data into buffer.");
     }
 

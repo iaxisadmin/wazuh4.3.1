@@ -11,6 +11,7 @@
 #include "shared.h"
 #include "os_net/os_net.h"
 #include "remoted.h"
+#include "state.h"
 #include "wazuh_db/helpers/wdb_global_helpers.h"
 
 #ifdef WAZUH_UNIT_TESTING
@@ -104,6 +105,9 @@ void HandleSecure()
 
     // Create Request listener thread
     w_create_thread(req_main, NULL);
+
+    // Create com request thread
+    w_create_thread(remcom_main, NULL);
 
     // Create State writer thread
     w_create_thread(rem_state_main, NULL);
@@ -345,7 +349,7 @@ void * rem_handler_main(__attribute__((unused)) void * args) {
             memcpy(buffer, message->buffer, message->size);
             HandleSecureMessage(buffer, message->size, &message->addr, message->sock, &wdb_sock);
         } else {
-            rem_inc_dequeued();
+            rem_inc_recv_dequeued();
         }
         rem_msgfree(message);
     }
@@ -362,7 +366,9 @@ void * rem_keyupdate_main(__attribute__((unused)) void * args) {
 
     while (1) {
         mdebug2("Checking for keys file changes.");
-        check_keyupdate();
+        if (check_keyupdate() == 1) {
+            rem_inc_keys_reload();
+        }
         sleep(seconds);
     }
 }
@@ -436,6 +442,7 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
         break;
     default:
         merror("IP address family not supported.");
+        rem_inc_recv_unknown();
         return;
     }
 
@@ -464,6 +471,7 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
                 _close_sock(&keys, sock_client);
             }
 
+            rem_inc_recv_unknown();
             return;
         }
 
@@ -493,6 +501,7 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
                 _close_sock(&keys, sock_client);
             }
 
+            rem_inc_recv_unknown();
             return;
         } else if ((keys.keyentries[agentid]->sock >= 0) && (keys.keyentries[agentid]->sock != sock_client)) {
             key_unlock();
@@ -501,6 +510,8 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
             if (sock_client >= 0) {
                 _close_sock(&keys, sock_client);
             }
+
+            rem_inc_recv_unknown();
             return;
         }
     } else if (strncmp(buffer, "#ping", 5) == 0) {
@@ -518,6 +529,7 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
                 mwarn("Ping operation could not be delivered completely (%d)", retval);
             }
 
+            rem_inc_recv_ping();
             return;
 
     } else {
@@ -535,6 +547,7 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
                 _close_sock(&keys, sock_client);
             }
 
+            rem_inc_recv_unknown();
             return;
         } else if ((keys.keyentries[agentid]->sock >= 0) && (keys.keyentries[agentid]->sock != sock_client)) {
             key_unlock();
@@ -544,6 +557,7 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
                 _close_sock(&keys, sock_client);
             }
 
+            rem_inc_recv_unknown();
             return;
         } else {
             ip_found = 1;
@@ -559,6 +573,7 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
             _close_sock(&keys, sock_client);
         }
 
+        rem_inc_recv_unknown();
         return;
     }
 
@@ -580,6 +595,7 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
             _close_sock(&keys, sock_client);
         }
 
+        rem_inc_recv_unknown();
         return;
     }
 
@@ -616,7 +632,7 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
 
         // The critical section for readers closes within this function
         save_controlmsg(key, tmp_msg, msg_length - 3, wdb_sock);
-        rem_inc_ctrl_msg();
+        rem_inc_recv_ctrl();
 
         OS_FreeKey(key);
         return;
@@ -644,9 +660,11 @@ STATIC void HandleSecureMessage(char *buffer, int recv_b, struct sockaddr_storag
         if (SendMSG(logr.m_queue, tmp_msg, srcmsg, SECURE_MQ) < 0) {
             // Something went wrong sending a message after an immediate reconnection...
             merror(QUEUE_ERROR, DEFAULTQUEUE, strerror(errno));
+        } else {
+            rem_inc_recv_evt();
         }
     } else {
-        rem_inc_evt();
+        rem_inc_recv_evt();
     }
 }
 

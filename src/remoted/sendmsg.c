@@ -11,6 +11,7 @@
 #include "shared.h"
 #include <pthread.h>
 #include "remoted.h"
+#include "state.h"
 #include "os_net/os_net.h"
 
 extern netbuffer_t netbuffer_send;
@@ -118,7 +119,7 @@ int send_msg(const char *agent_id, const char *msg, ssize_t msg_length)
     } else if (keys.keyentries[key_id]->sock >= 0) {
         /* TCP mode, enqueue the message in the send buffer */
         if (retval = nb_queue(&netbuffer_send, keys.keyentries[key_id]->sock, crypt_msg, msg_size), !retval) {
-            rem_inc_msg_queued();
+            rem_inc_send_queued();
         }
         w_mutex_unlock(&keys.keyentries[key_id]->mutex);
         key_unlock();
