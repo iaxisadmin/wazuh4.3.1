@@ -19,6 +19,38 @@
 #include <openssl/x509v3.h>
 
 /**
+ * @brief Function to generate a random serial number. This function is copied from the file openssl/apps/apps.h due
+ *        to a conflict when importing this file into a C++ file.
+ *
+ * @param b
+ * @param ai
+ * @return int
+ */
+int rand_serial(BIGNUM *b, ASN1_INTEGER *ai)
+{
+    BIGNUM *btmp;
+    int ret = 0;
+
+    btmp = b == NULL ? BN_new() : b;
+    if (btmp == NULL)
+        return 0;
+    // The 159 constant is defined in openssl/apps/apps.h (SERIAL_RAND_BITS)
+    if (!BN_rand(btmp, 159, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY))
+        goto error;
+    if (ai && !BN_to_ASN1_INTEGER(btmp, ai))
+        goto error;
+
+    ret = 1;
+
+ error:
+
+    if (btmp != b)
+        BN_free(btmp);
+
+    return ret;
+}
+
+/**
  * @brief Smart deleter used to free diferent structures.
  *
  */
@@ -37,6 +69,11 @@ struct smartDeleter final
     void operator()(BIGNUM* bn)
     {
         BN_free(bn);
+    }
+
+    void operator()(ASN1_INTEGER* asn1)
+    {
+        ASN1_INTEGER_free(asn1);
     }
 };
 
@@ -164,7 +201,8 @@ std::unique_ptr<EVP_PKEY, smartDeleter> generate_key(int bits)
  */
 std::unique_ptr<X509, smartDeleter> generate_cert(const std::unique_ptr<EVP_PKEY, smartDeleter>& key)
 {
-    std::unique_ptr<X509, smartDeleter> cert (X509_new());
+    std::unique_ptr<X509, smartDeleter> cert(X509_new());
+    std::unique_ptr<ASN1_INTEGER, smartDeleter> serial_number(ASN1_INTEGER_new());
     X509_NAME* name = NULL;
     X509V3_CTX ctx;
 
@@ -174,8 +212,20 @@ std::unique_ptr<X509, smartDeleter> generate_cert(const std::unique_ptr<EVP_PKEY
         return nullptr;
     }
 
-    X509_set_version(cert.get(), 2);
+    if (serial_number.get() == NULL)
+    {
+        std::cerr << "Cannot create serial number." << std::endl;
+        return nullptr;
+    }
 
+    if (!rand_serial(NULL, serial_number.get()))
+    {
+        std::cerr << "Cannot generate serial number." << std::endl;
+        return nullptr;
+    }
+
+    X509_set_version(cert.get(), 2);
+    X509_set_serialNumber(cert.get(), serial_number.get());
     X509_gmtime_adj(X509_get_notBefore(cert.get()), 0);
     X509_gmtime_adj(X509_get_notAfter(cert.get()), 31536000L);
 
