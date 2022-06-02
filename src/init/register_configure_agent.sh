@@ -130,73 +130,73 @@ add_parameter () {
 }
 
 get_deprecated_vars () {
-    if [ ! -z "${WAZUH_MANAGER_IP}" ] && [ -z "${WAZUH_MANAGER}" ]; then
-        WAZUH_MANAGER=${WAZUH_MANAGER_IP}
+    if [ ! -z "${IRONCLOUD_MANAGER_IP}" ] && [ -z "${IRONCLOUD_MANAGER}" ]; then
+        IRONCLOUD_MANAGER=${IRONCLOUD_MANAGER_IP}
     fi
-    if [ ! -z "${WAZUH_AUTHD_SERVER}" ] && [ -z "${WAZUH_REGISTRATION_SERVER}" ]; then
-        WAZUH_REGISTRATION_SERVER=${WAZUH_AUTHD_SERVER}
+    if [ ! -z "${IRONCLOUD_AUTHD_SERVER}" ] && [ -z "${IRONCLOUD_REGISTRATION_SERVER}" ]; then
+        IRONCLOUD_REGISTRATION_SERVER=${IRONCLOUD_AUTHD_SERVER}
     fi
-    if [ ! -z "${WAZUH_AUTHD_PORT}" ] && [ -z "${WAZUH_REGISTRATION_PORT}" ]; then
-        WAZUH_REGISTRATION_PORT=${WAZUH_AUTHD_PORT}
+    if [ ! -z "${IRONCLOUD_AUTHD_PORT}" ] && [ -z "${IRONCLOUD_REGISTRATION_PORT}" ]; then
+        IRONCLOUD_REGISTRATION_PORT=${IRONCLOUD_AUTHD_PORT}
     fi
-    if [ ! -z "${WAZUH_PASSWORD}" ] && [ -z "${WAZUH_REGISTRATION_PASSWORD}" ]; then
-        WAZUH_REGISTRATION_PASSWORD=${WAZUH_PASSWORD}
+    if [ ! -z "${IRONCLOUD_PASSWORD}" ] && [ -z "${IRONCLOUD_REGISTRATION_PASSWORD}" ]; then
+        IRONCLOUD_REGISTRATION_PASSWORD=${IRONCLOUD_PASSWORD}
     fi
-    if [ ! -z "${WAZUH_NOTIFY_TIME}" ] && [ -z "${WAZUH_KEEP_ALIVE_INTERVAL}" ]; then
-        WAZUH_KEEP_ALIVE_INTERVAL=${WAZUH_NOTIFY_TIME}
+    if [ ! -z "${IRONCLOUD_NOTIFY_TIME}" ] && [ -z "${IRONCLOUD_KEEP_ALIVE_INTERVAL}" ]; then
+        IRONCLOUD_KEEP_ALIVE_INTERVAL=${IRONCLOUD_NOTIFY_TIME}
     fi
-    if [ ! -z "${WAZUH_CERTIFICATE}" ] && [ -z "${WAZUH_REGISTRATION_CA}" ]; then
-        WAZUH_REGISTRATION_CA=${WAZUH_CERTIFICATE}
+    if [ ! -z "${IRONCLOUD_CERTIFICATE}" ] && [ -z "${IRONCLOUD_REGISTRATION_CA}" ]; then
+        IRONCLOUD_REGISTRATION_CA=${IRONCLOUD_CERTIFICATE}
     fi
-    if [ ! -z "${WAZUH_PEM}" ] && [ -z "${WAZUH_REGISTRATION_CERTIFICATE}" ]; then
-        WAZUH_REGISTRATION_CERTIFICATE=${WAZUH_PEM}
+    if [ ! -z "${IRONCLOUD_PEM}" ] && [ -z "${IRONCLOUD_REGISTRATION_CERTIFICATE}" ]; then
+        IRONCLOUD_REGISTRATION_CERTIFICATE=${IRONCLOUD_PEM}
     fi
-    if [ ! -z "${WAZUH_KEY}" ] && [ -z "${WAZUH_REGISTRATION_KEY}" ]; then
-        WAZUH_REGISTRATION_KEY=${WAZUH_KEY}
+    if [ ! -z "${IRONCLOUD_KEY}" ] && [ -z "${IRONCLOUD_REGISTRATION_KEY}" ]; then
+        IRONCLOUD_REGISTRATION_KEY=${IRONCLOUD_KEY}
     fi
-    if [ ! -z "${WAZUH_GROUP}" ] && [ -z "${WAZUH_AGENT_GROUP}" ]; then
-        WAZUH_AGENT_GROUP=${WAZUH_GROUP}
+    if [ ! -z "${IRONCLOUD_GROUP}" ] && [ -z "${IRONCLOUD_AGENT_GROUP}" ]; then
+        IRONCLOUD_AGENT_GROUP=${IRONCLOUD_GROUP}
     fi
 }
 
 set_vars () {
-    export WAZUH_MANAGER=$(launchctl getenv WAZUH_MANAGER)
-    export WAZUH_MANAGER_PORT=$(launchctl getenv WAZUH_MANAGER_PORT)
-    export WAZUH_PROTOCOL=$(launchctl getenv WAZUH_PROTOCOL)
-    export WAZUH_REGISTRATION_SERVER=$(launchctl getenv WAZUH_REGISTRATION_SERVER)
-    export WAZUH_REGISTRATION_PORT=$(launchctl getenv WAZUH_REGISTRATION_PORT)
-    export WAZUH_REGISTRATION_PASSWORD=$(launchctl getenv WAZUH_REGISTRATION_PASSWORD)
-    export WAZUH_KEEP_ALIVE_INTERVAL=$(launchctl getenv WAZUH_KEEP_ALIVE_INTERVAL)
-    export WAZUH_TIME_RECONNECT=$(launchctl getenv WAZUH_TIME_RECONNECT)
-    export WAZUH_REGISTRATION_CA=$(launchctl getenv WAZUH_REGISTRATION_CA)
-    export WAZUH_REGISTRATION_CERTIFICATE=$(launchctl getenv WAZUH_REGISTRATION_CERTIFICATE)
-    export WAZUH_REGISTRATION_KEY=$(launchctl getenv WAZUH_REGISTRATION_KEY)
-    export WAZUH_AGENT_NAME=$(launchctl getenv WAZUH_AGENT_NAME)
-    export WAZUH_AGENT_GROUP=$(launchctl getenv WAZUH_AGENT_GROUP)
+    export IRONCLOUD_MANAGER=$(launchctl getenv IRONCLOUD_MANAGER)
+    export IRONCLOUD_MANAGER_PORT=$(launchctl getenv IRONCLOUD_MANAGER_PORT)
+    export IRONCLOUD_PROTOCOL=$(launchctl getenv IRONCLOUD_PROTOCOL)
+    export IRONCLOUD_REGISTRATION_SERVER=$(launchctl getenv IRONCLOUD_REGISTRATION_SERVER)
+    export IRONCLOUD_REGISTRATION_PORT=$(launchctl getenv IRONCLOUD_REGISTRATION_PORT)
+    export IRONCLOUD_REGISTRATION_PASSWORD=$(launchctl getenv IRONCLOUD_REGISTRATION_PASSWORD)
+    export IRONCLOUD_KEEP_ALIVE_INTERVAL=$(launchctl getenv IRONCLOUD_KEEP_ALIVE_INTERVAL)
+    export IRONCLOUD_TIME_RECONNECT=$(launchctl getenv IRONCLOUD_TIME_RECONNECT)
+    export IRONCLOUD_REGISTRATION_CA=$(launchctl getenv IRONCLOUD_REGISTRATION_CA)
+    export IRONCLOUD_REGISTRATION_CERTIFICATE=$(launchctl getenv IRONCLOUD_REGISTRATION_CERTIFICATE)
+    export IRONCLOUD_REGISTRATION_KEY=$(launchctl getenv IRONCLOUD_REGISTRATION_KEY)
+    export IRONCLOUD_AGENT_NAME=$(launchctl getenv IRONCLOUD_AGENT_NAME)
+    export IRONCLOUD_AGENT_GROUP=$(launchctl getenv IRONCLOUD_AGENT_GROUP)
     export ENROLLMENT_DELAY=$(launchctl getenv ENROLLMENT_DELAY)
 
     # The following variables are yet supported but all of them are deprecated
-    export WAZUH_MANAGER_IP=$(launchctl getenv WAZUH_MANAGER_IP)
-    export WAZUH_NOTIFY_TIME=$(launchctl getenv WAZUH_NOTIFY_TIME)
-    export WAZUH_AUTHD_SERVER=$(launchctl getenv WAZUH_AUTHD_SERVER)
-    export WAZUH_AUTHD_PORT=$(launchctl getenv WAZUH_AUTHD_PORT)
-    export WAZUH_PASSWORD=$(launchctl getenv WAZUH_PASSWORD)
-    export WAZUH_GROUP=$(launchctl getenv WAZUH_GROUP)
-    export WAZUH_CERTIFICATE=$(launchctl getenv WAZUH_CERTIFICATE)
-    export WAZUH_KEY=$(launchctl getenv WAZUH_KEY)
-    export WAZUH_PEM=$(launchctl getenv WAZUH_PEM)
+    export IRONCLOUD_MANAGER_IP=$(launchctl getenv IRONCLOUD_MANAGER_IP)
+    export IRONCLOUD_NOTIFY_TIME=$(launchctl getenv IRONCLOUD_NOTIFY_TIME)
+    export IRONCLOUD_AUTHD_SERVER=$(launchctl getenv IRONCLOUD_AUTHD_SERVER)
+    export IRONCLOUD_AUTHD_PORT=$(launchctl getenv IRONCLOUD_AUTHD_PORT)
+    export IRONCLOUD_PASSWORD=$(launchctl getenv IRONCLOUD_PASSWORD)
+    export IRONCLOUD_GROUP=$(launchctl getenv IRONCLOUD_GROUP)
+    export IRONCLOUD_CERTIFICATE=$(launchctl getenv IRONCLOUD_CERTIFICATE)
+    export IRONCLOUD_KEY=$(launchctl getenv IRONCLOUD_KEY)
+    export IRONCLOUD_PEM=$(launchctl getenv IRONCLOUD_PEM)
 }
 
 unset_vars() {
 
     OS=$1
 
-    vars=(WAZUH_MANAGER_IP WAZUH_PROTOCOL WAZUH_MANAGER_PORT WAZUH_NOTIFY_TIME \
-          WAZUH_TIME_RECONNECT WAZUH_AUTHD_SERVER WAZUH_AUTHD_PORT WAZUH_PASSWORD \
-          WAZUH_AGENT_NAME WAZUH_GROUP WAZUH_CERTIFICATE WAZUH_KEY WAZUH_PEM \
-          WAZUH_MANAGER WAZUH_REGISTRATION_SERVER WAZUH_REGISTRATION_PORT \
-          WAZUH_REGISTRATION_PASSWORD WAZUH_KEEP_ALIVE_INTERVAL WAZUH_REGISTRATION_CA \
-          WAZUH_REGISTRATION_CERTIFICATE WAZUH_REGISTRATION_KEY WAZUH_AGENT_GROUP \
+    vars=(IRONCLOUD_MANAGER_IP IRONCLOUD_PROTOCOL IRONCLOUD_MANAGER_PORT IRONCLOUD_NOTIFY_TIME \
+          IRONCLOUD_TIME_RECONNECT IRONCLOUD_AUTHD_SERVER IRONCLOUD_AUTHD_PORT IRONCLOUD_PASSWORD \
+          IRONCLOUD_AGENT_NAME IRONCLOUD_GROUP IRONCLOUD_CERTIFICATE IRONCLOUD_KEY IRONCLOUD_PEM \
+          IRONCLOUD_MANAGER IRONCLOUD_REGISTRATION_SERVER IRONCLOUD_REGISTRATION_PORT \
+          IRONCLOUD_REGISTRATION_PASSWORD IRONCLOUD_KEEP_ALIVE_INTERVAL IRONCLOUD_REGISTRATION_CA \
+          IRONCLOUD_REGISTRATION_CERTIFICATE IRONCLOUD_REGISTRATION_KEY IRONCLOUD_AGENT_GROUP \
           ENROLLMENT_DELAY)
 
     for var in "${vars[@]}"; do
@@ -287,56 +287,56 @@ main () {
 
     get_deprecated_vars
 
-    if [ ! -z ${WAZUH_REGISTRATION_SERVER} ] || [ ! -z ${WAZUH_REGISTRATION_PORT} ] || [ ! -z ${WAZUH_REGISTRATION_CA} ] || [ ! -z ${WAZUH_REGISTRATION_CERTIFICATE} ] || [ ! -z ${WAZUH_REGISTRATION_KEY} ] || [ ! -z ${WAZUH_AGENT_NAME} ] || [ ! -z ${WAZUH_AGENT_GROUP} ]; then
+    if [ ! -z ${IRONCLOUD_REGISTRATION_SERVER} ] || [ ! -z ${IRONCLOUD_REGISTRATION_PORT} ] || [ ! -z ${IRONCLOUD_REGISTRATION_CA} ] || [ ! -z ${IRONCLOUD_REGISTRATION_CERTIFICATE} ] || [ ! -z ${IRONCLOUD_REGISTRATION_KEY} ] || [ ! -z ${IRONCLOUD_AGENT_NAME} ] || [ ! -z ${IRONCLOUD_AGENT_GROUP} ]; then
         add_auto_enrollment
-        set_auto_enrollment_tag_value "manager_address" ${WAZUH_REGISTRATION_SERVER}
-        set_auto_enrollment_tag_value "port" ${WAZUH_REGISTRATION_PORT}
-        set_auto_enrollment_tag_value "server_ca_path" ${WAZUH_REGISTRATION_CA}
-        set_auto_enrollment_tag_value "agent_certificate_path" ${WAZUH_REGISTRATION_CERTIFICATE}
-        set_auto_enrollment_tag_value "agent_key_path" ${WAZUH_REGISTRATION_KEY}
-        set_auto_enrollment_tag_value "agent_name" ${WAZUH_AGENT_NAME}
-        set_auto_enrollment_tag_value "groups" ${WAZUH_AGENT_GROUP}
+        set_auto_enrollment_tag_value "manager_address" ${IRONCLOUD_REGISTRATION_SERVER}
+        set_auto_enrollment_tag_value "port" ${IRONCLOUD_REGISTRATION_PORT}
+        set_auto_enrollment_tag_value "server_ca_path" ${IRONCLOUD_REGISTRATION_CA}
+        set_auto_enrollment_tag_value "agent_certificate_path" ${IRONCLOUD_REGISTRATION_CERTIFICATE}
+        set_auto_enrollment_tag_value "agent_key_path" ${IRONCLOUD_REGISTRATION_KEY}
+        set_auto_enrollment_tag_value "agent_name" ${IRONCLOUD_AGENT_NAME}
+        set_auto_enrollment_tag_value "groups" ${IRONCLOUD_AGENT_GROUP}
         set_auto_enrollment_tag_value "delay_after_enrollment" ${ENROLLMENT_DELAY}
         delete_blank_lines ${TMP_ENROLLMENT}
         concat_conf
     fi
 
             
-    if [ ! -z ${WAZUH_REGISTRATION_PASSWORD} ]; then
-        echo ${WAZUH_REGISTRATION_PASSWORD} > "${INSTALLDIR}/etc/authd.pass"
+    if [ ! -z ${IRONCLOUD_REGISTRATION_PASSWORD} ]; then
+        echo ${IRONCLOUD_REGISTRATION_PASSWORD} > "${INSTALLDIR}/etc/authd.pass"
     fi
 
-    if [ ! -z ${WAZUH_MANAGER} ]; then
+    if [ ! -z ${IRONCLOUD_MANAGER} ]; then
         if [ ! -f ${INSTALLDIR}/logs/ossec.log ]; then
             touch -f ${INSTALLDIR}/logs/ossec.log
             chmod 660 ${INSTALLDIR}/logs/ossec.log
             chown root:wazuh ${INSTALLDIR}/logs/ossec.log
         fi
 
-        # Check if multiples IPs are defined in variable WAZUH_MANAGER
-        WAZUH_MANAGER=$(echo ${WAZUH_MANAGER} | sed "s#,#;#g")
-        ADDRESSES="$(echo ${WAZUH_MANAGER} | awk '{split($0,a,";")} END{ for (i in a) { print a[i] } }' |  tr '\n' ' ')"
+        # Check if multiples IPs are defined in variable IRONCLOUD_MANAGER
+        IRONCLOUD_MANAGER=$(echo ${IRONCLOUD_MANAGER} | sed "s#,#;#g")
+        ADDRESSES="$(echo ${IRONCLOUD_MANAGER} | awk '{split($0,a,";")} END{ for (i in a) { print a[i] } }' |  tr '\n' ' ')"
         if echo ${ADDRESSES} | grep ' ' > /dev/null 2>&1 ; then
             # Get uniques values
             ADDRESSES=$(echo "${ADDRESSES}" | tr ' ' '\n' | sort -u | tr '\n' ' ')
             add_adress_block "${ADDRESSES}"
-            if [ -z ${WAZUH_REGISTRATION_SERVER} ]; then
-                WAZUH_REGISTRATION_SERVER="$(echo $ADDRESSES | cut -d ' ' -f 1)"
+            if [ -z ${IRONCLOUD_REGISTRATION_SERVER} ]; then
+                IRONCLOUD_REGISTRATION_SERVER="$(echo $ADDRESSES | cut -d ' ' -f 1)"
             fi
         else
             # Single address
-            edit_value_tag "address" ${WAZUH_MANAGER}
-            if [ -z ${WAZUH_REGISTRATION_SERVER} ]; then
-                WAZUH_REGISTRATION_SERVER="${WAZUH_MANAGER}"
+            edit_value_tag "address" ${IRONCLOUD_MANAGER}
+            if [ -z ${IRONCLOUD_REGISTRATION_SERVER} ]; then
+                IRONCLOUD_REGISTRATION_SERVER="${IRONCLOUD_MANAGER}"
             fi
         fi
     fi
 
     # Options to be modified in ossec.conf
-    edit_value_tag "protocol" "$(tolower ${WAZUH_PROTOCOL})"
-    edit_value_tag "port" ${WAZUH_MANAGER_PORT}
-    edit_value_tag "notify_time" ${WAZUH_KEEP_ALIVE_INTERVAL}
-    edit_value_tag "time-reconnect" ${WAZUH_TIME_RECONNECT}
+    edit_value_tag "protocol" "$(tolower ${IRONCLOUD_PROTOCOL})"
+    edit_value_tag "port" ${IRONCLOUD_MANAGER_PORT}
+    edit_value_tag "notify_time" ${IRONCLOUD_KEEP_ALIVE_INTERVAL}
+    edit_value_tag "time-reconnect" ${IRONCLOUD_TIME_RECONNECT}
 
     unset_vars ${uname_s}
 }
